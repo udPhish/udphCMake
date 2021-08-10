@@ -1,7 +1,16 @@
-option(GIT_SUBMODULE "Check submodules during build" ON)
-# Git
-find_package(Git QUIET)
-if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+option(GIT_FETCH_SUBMODULES "Check submodules during build" ON)
+option(GIT_CLEAN_SUBMODULES "Remove any submodules not added using git_add_submodule" OFF)
+option(GIT_CLEAN_SUBMODULES_FORCE "Ignore uncommited changes when cleaning submodules" OFF)
+
+find_package(Git REQUIRED)
+
+if(NOT GIT_FOUND)
+	message(FATAL_ERROR "Git not found.")
+elseif(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+	message(FATAL_ERROR "Git project not initialized.")
+endif()
+
+function(git_update_information proj_name)
 	#Get Git describe
 	execute_process(COMMAND ${GIT_EXECUTABLE} describe --dirty
 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -94,22 +103,90 @@ if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
 		set(GIT_IS_DIRTY false)
 	endif()
 	set(GIT_DESCRIBE_SUB "")
+		
+	execute_process(
+		COMMAND ${GIT_EXECUTABLE} config --file .gitmodules --get-regexp path
+		WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+		OUTPUT_VARIABLE GIT_SUBMODULE_PATH_PAIRS
+	)
+	string(STRIP ${GIT_SUBMODULE_PATH_PAIRS} GIT_SUBMODULE_PATH_PAIRS)
+	string(REGEX REPLACE "\r?\n|\r" ";" GIT_SUBMODULE_PATH_PAIRS ${GIT_SUBMODULE_PATH_PAIRS})
+	set(GIT_SUBMODULE_PATHS ${GIT_SUBMODULE_PATH_PAIRS})
+	set(GIT_SUBMODULE_NAMES ${GIT_SUBMODULE_PATH_PAIRS})
+	list(TRANSFORM GIT_SUBMODULE_PATHS REPLACE "submodule\..+\.path " "")
+	#list(TRANSFORM GIT_SUBMODULE_NAMES REPLACE "submodule\.|\.path .+" "")
 
-	# endif()
-	 # Update Git submodules
-	 set(GIT_SUBMOD_RESULT "1")
-     if(GIT_SUBMODULE)
-	 		message(STATUS "Submodule update")
-	 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive --remote
-	 										WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	 										RESULT_VARIABLE GIT_SUBMOD_RESULT)
-	 		if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-	 			message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-	 		endif()
-     endif()
-	 if(NOT GIT_SUBMOD_RESULT EQUAL "0")
-	 	message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
-	 endif()
-else()
-	message(FATAL_ERROR "Git not found or project is not initialized.")
-endif()
+	set(${proj_name}_GIT_VERSION ${GIT_VERSION} PARENT_SCOPE)
+	set(${proj_name}_GIT_VERSION_MAJOR ${GIT_VERSION_MAJOR} PARENT_SCOPE)
+	set(${proj_name}_GIT_VERSION_MINOR ${GIT_VERSION_MINOR} PARENT_SCOPE)
+	set(${proj_name}_GIT_VERSION_PATCH ${GIT_VERSION_PATCH} PARENT_SCOPE)
+	set(${proj_name}_GIT_IS_DIRTY ${GIT_IS_DIRTY} PARENT_SCOPE)
+	set(${proj_name}_GIT_COMMIT ${GIT_COMMIT} PARENT_SCOPE)
+	set(${proj_name}_GIT_ADDITIONAL_COMMITS ${GIT_ADDITIONAL_COMMITS} PARENT_SCOPE)
+	set(${proj_name}_GIT_SUBMODULES_STORED ${GIT_SUBMODULE_PATHS} PARENT_SCOPE)
+	#set(${proj_name}_GIT_SUBMODULE_NAMES ${GIT_SUBMODULE_NAMES} PARENT_SCOPE)
+endfunction()
+function(git_update_submodules)
+	set(GIT_SUBMOD_RESULT "1")
+	if(GIT_SUBMODULE)
+		message(STATUS "Submodule update")
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule foreach -q --recursive "\"${GIT_EXECUTABLE}\" switch $(\"${GIT_EXECUTABLE}\" config -f $toplevel/.gitmodules submodule.$name.branch || echo master)" 
+	 									WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 									RESULT_VARIABLE GIT_SUBMOD_RESULT)
+		if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+	 		message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}")
+		endif()
+	endif()
+	if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+		message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+	endif()
+endfunction()
+function(git_update_submodule submodule_dir)
+	if(GIT_FETCH_SUBMODULES)
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --recursive --remote -- "${directory}"
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 					RESULT_VARIABLE COMMAND_RESULT)
+		if(NOT COMMAND_RESULT EQUAL "0")
+	 		message(FATAL_ERROR  "Unable to update submodule ${directory}.")
+		endif()
+	endif()
+	execute_process(COMMAND ${GIT_EXECUTABLE} switch $("${GIT_EXECUTABLE}" config -f $toplevel/.gitmodules submodule.$name.branch || echo master)
+	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${directory}"
+	 				RESULT_VARIABLE COMMAND_RESULT)
+	if(NOT COMMAND_RESULT EQUAL "0")
+	 	message(FATAL_ERROR  "Unable to update submodule ${directory}.")
+	endif()
+endfunction()
+macro(git_add_submodule directory remote)
+	if(NOT ${directory} IN_LIST ${PROJECT_NAME}_GIT_SUBMODULE_DIRS)
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule add --force "${remote}" "${directory}"
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 					RESULT_VARIABLE COMMAND_RESULT)
+		if(NOT COMMAND_RESULT EQUAL "0")
+			message(FATAL_ERROR "Unable to add submodule ${directory}.")
+		endif()
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule init "${directory}"
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 					RESULT_VARIABLE COMMAND_RESULT)
+		if(NOT COMMAND_RESULT EQUAL "0")
+			message(FATAL_ERROR "Unable to initialize submodule ${directory}.")
+		endif()
+	endif()
+	if(ARGC EQUAL "3")
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule set-branch --branch "${ARGV2}" -- "${directory}"
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 					RESULT_VARIABLE COMMAND_RESULT)
+		if(NOT COMMAND_RESULT EQUAL "0")
+			message(FATAL_ERROR "Unable to select branch ${ARGV2} for submodule ${directory}.")
+		endif()
+	else()
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule set-branch --default -- "${directory}"
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 					RESULT_VARIABLE COMMAND_RESULT)
+		if(NOT COMMAND_RESULT EQUAL "0")
+			message(FATAL_ERROR "Unable to select default branch for submodule ${directory}.")
+		endif()
+	endif()
+	git_update_submodule("${directory}")
+	list(APPEND ${PROJECT_NAME}_GIT_SUBMODULES "${directory}")
+endmacro()

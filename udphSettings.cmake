@@ -1,14 +1,3 @@
-# Set project namespace
-set(${PROJECT_NAME}_NAMESPACE ${PROJECT_NAME})
-# Set configuration directories
-set(${PROJECT_NAME}_GENERATED_HEADER_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated_headers/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}/)
-set(${PROJECT_NAME}_GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}/)
-set(${PROJECT_NAME}_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}")
-# Set configuration files
-set(${PROJECT_NAME}_VERSION_CONFIG_FILE "${${PROJECT_NAME}_GENERATED_DIR}/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}ConfigVersion.cmake")
-set(${PROJECT_NAME}_CONFIG_FILE "${${PROJECT_NAME}_GENERATED_DIR}/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}Config.cmake")
-set(${PROJECT_NAME}_TARGETS_FILE "${PROJECT_NAME}Targets.cmake")
-
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(
@@ -32,8 +21,9 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
-# Testing
 option(ENABLE_TESTING "Enable Test Builds" ON)
 if(ENABLE_TESTING)
   enable_testing()
 endif()
+
+option(GIT_PROJECT "Project uses Git." ON)
