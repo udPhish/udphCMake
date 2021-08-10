@@ -22,8 +22,5 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 option(ENABLE_TESTING "Enable Test Builds" ON)
-if(ENABLE_TESTING)
-  enable_testing()
-endif()
 
 option(GIT_PROJECT "Project uses Git." ON)
