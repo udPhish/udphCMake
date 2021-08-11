@@ -10,6 +10,16 @@ elseif(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
 	message(FATAL_ERROR "Git project not initialized.")
 endif()
 
+if(GIT_NORMALIZE_LINE_ENDINGS)
+	if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+		execute_process(COMMAND ${GIT_EXECUTABLE} config --global core.autocrlf true
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+	else()
+		execute_process(COMMAND ${GIT_EXECUTABLE} config --global core.autocrlf input
+						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+	endif()
+endif()
+
 function(git_update_information proj_name)
 	#Get Git describe
 	execute_process(COMMAND ${GIT_EXECUTABLE} describe --dirty
