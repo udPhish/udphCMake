@@ -152,8 +152,13 @@ function(git_update_submodules)
 	endif()
 endfunction()
 function(git_update_submodule submodule_dir)
+	message("Updating submodule ${submodule_dir} in ${PROJECT_NAME}")
+	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse @{0}
+	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}"
+	 				RESULT_VARIABLE COMMAND_RESULT)
+	set(SUBMODULE_CURRENT_COMMIT ${COMMAND_RESULT})
 	if(GIT_FETCH_SUBMODULES)
-		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --recursive --remote -- "${submodule_dir}"
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote -- "${submodule_dir}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
 		if(NOT COMMAND_RESULT EQUAL "0")
@@ -173,6 +178,16 @@ function(git_update_submodule submodule_dir)
 	 				RESULT_VARIABLE COMMAND_RESULT)
 	if(NOT COMMAND_RESULT EQUAL "0")
 	 	message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
+	endif()
+	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse @{0}
+	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}"
+	 				RESULT_VARIABLE COMMAND_RESULT)
+	set(SUBMODULE_NEW_COMMIT ${COMMAND_RESULT})
+
+	if("${SUBMODULE_CURRENT_COMMIT}" STREQUAL "${SUBMODULE_NEW_COMMIT}")
+		message("Submodule ${submodule_dir} in ${PROJECT_NAME} up to date.")
+	else()
+		message("Submodule ${submodule_dir} in ${PROJECT_NAME} switched from ${SUBMODULE_CURRENT_COMMIT} to ${SUBMODULE_NEW_COMMIT}")
 	endif()
 endfunction()
 macro(git_add_submodule directory remote)
