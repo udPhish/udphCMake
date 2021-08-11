@@ -44,8 +44,8 @@ endmacro()
 
 macro(finalize)
 	if(GIT_PROJECT AND GIT_CLEAN_SUBMODULES)
-		foreach(ITEM ${PROJECT_NAME}_GIT_SUBMODULES_STORED)
-			if(NOT "${ITEM}" STREQUAL "${CMAKE_UDPH_PATH}")
+		foreach(ITEM ${${PROJECT_NAME}_GIT_SUBMODULES_STORED})
+			if(NOT "${CMAKE_CURRENT_SOURCE_DIR}/${ITEM}" STREQUAL "${CMAKE_UDPH_PATH}")
 				if(NOT ${ITEM} IN_LIST ${PROJECT_NAME}_GIT_SUBMODULES)
 					if(GIT_CLEAN_SUBMODULES_FORCE)
 						execute_process(COMMAND ${GIT_EXECUTABLE} submodule deinit --force "${ITEM}"
@@ -59,9 +59,15 @@ macro(finalize)
 					if(NOT COMMAND_RESULT EQUAL "0")
 						message(FATAL_ERROR "Unable to deinit submodule ${ITEM}.")
 					endif()
-					execute_process(COMMAND ${GIT_EXECUTABLE} rm "${ITEM}"
-									WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-	 								RESULT_VARIABLE COMMAND_RESULT)
+					if(GIT_CLEAN_SUBMODULES_FORCE)
+						execute_process(COMMAND ${GIT_EXECUTABLE} rm --force "${ITEM}"
+										WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 									RESULT_VARIABLE COMMAND_RESULT)
+					else()
+						execute_process(COMMAND ${GIT_EXECUTABLE} rm "${ITEM}"
+										WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 									RESULT_VARIABLE COMMAND_RESULT)
+					endif()
 					if(NOT COMMAND_RESULT EQUAL "0")
 						message(FATAL_ERROR "Unable to clean submodule ${ITEM}.")
 					endif()

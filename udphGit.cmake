@@ -143,18 +143,26 @@ function(git_update_submodules)
 endfunction()
 function(git_update_submodule submodule_dir)
 	if(GIT_FETCH_SUBMODULES)
-		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --recursive --remote -- "${directory}"
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --recursive --remote -- "${submodule_dir}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
 		if(NOT COMMAND_RESULT EQUAL "0")
-	 		message(FATAL_ERROR  "Unable to update submodule ${directory}.")
+	 		message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
 		endif()
 	endif()
-	execute_process(COMMAND ${GIT_EXECUTABLE} switch $("${GIT_EXECUTABLE}" config -f $toplevel/.gitmodules submodule.$name.branch || echo master)
-	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${directory}"
+	execute_process(COMMAND ${GIT_EXECUTABLE} config -f .gitmodules submodule.${submodule_dir}.branch
+	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	 				RESULT_VARIABLE COMMAND_RESULT
+					OUTPUT_VARIABLE COMMAND_OUTPUT)
+	if("${COMMAND_OUTPUT}" STREQUAL "")
+		set(COMMAND_OUTPUT "master")
+	endif()
+	string(STRIP "${COMMAND_OUTPUT}" COMMAND_OUTPUT)
+	execute_process(COMMAND ${GIT_EXECUTABLE} switch ${COMMAND_OUTPUT}
+	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}"
 	 				RESULT_VARIABLE COMMAND_RESULT)
 	if(NOT COMMAND_RESULT EQUAL "0")
-	 	message(FATAL_ERROR  "Unable to update submodule ${directory}.")
+	 	message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
 	endif()
 endfunction()
 macro(git_add_submodule directory remote)
