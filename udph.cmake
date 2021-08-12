@@ -1,14 +1,13 @@
 set(CMAKE_UDPH_PATH "${CMAKE_CURRENT_LIST_DIR}")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_UDPH_PATH}")
 
-include(udphSettings)
+include("${CMAKE_UDPH_PATH}/udphSettings")
 
 if(GIT_PROJECT)
-	include(udphGit)
+	include("${CMAKE_UDPH_PATH}/udphGit")
 endif()
-include(udphProject)
-include(udphTarget)
-include(udphStaticAnalyzers)
+include("${CMAKE_UDPH_PATH}/udphProject")
+include("${CMAKE_UDPH_PATH}/udphTarget")
+include("${CMAKE_UDPH_PATH}/udphStaticAnalyzers")
 
 include(GNUInstallDirs)
 include(FetchContent)
