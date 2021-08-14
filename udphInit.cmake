@@ -1,12 +1,12 @@
-include("${CMAKE_UDPH_PATH}/udphSettings")
+include("./udphSettings")
 
 if(GIT_PROJECT)
-	include("${CMAKE_UDPH_PATH}/udphGit")
+	include("./udphGit")
 endif()
 
-include("${CMAKE_UDPH_PATH}/udphProject")
-include("${CMAKE_UDPH_PATH}/udphTarget")
-include("${CMAKE_UDPH_PATH}/udphStaticAnalyzers")
+include("./udphProject")
+include("./udphTarget")
+include("./udphStaticAnalyzers")
 
 include(GNUInstallDirs)
 include(GenerateExportHeader)
