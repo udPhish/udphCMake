@@ -12,4 +12,4 @@ if(NOT ${lcName}_POPULATED)
 
 endif()
 
-include("${${lcName}_SOURCE_DIR}/udphInit")
+include("${${lcName}_SOURCE_DIR}/udphInit.cmake")
