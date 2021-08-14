@@ -9,7 +9,6 @@ include("${CMAKE_UDPH_PATH}/udphTarget")
 include("${CMAKE_UDPH_PATH}/udphStaticAnalyzers")
 
 include(GNUInstallDirs)
-include(FetchContent)
 include(GenerateExportHeader)
 include(CMakePackageConfigHelpers)
 
