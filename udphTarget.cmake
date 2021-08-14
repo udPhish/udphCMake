@@ -204,14 +204,12 @@ function(target_package TARGET_NAME)
         COMPATIBILITY
             SameMajorVersion
     )
-        message(here)
     configure_package_config_file(
-        "${CMAKE_UDPH_PATH}/udphConfig.cmake.in"
+        "${UDPH_CMAKE_DIR}/udphConfig.cmake.in"
         ${${PROJECT_NAME}_CONFIG_FILE}
         INSTALL_DESTINATION
             "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
     )
-        message(also)
 
     #########
     # INSTALL
