@@ -158,7 +158,7 @@ function(git_update_submodule submodule_dir)
 	 				RESULT_VARIABLE COMMAND_RESULT)
 	set(SUBMODULE_CURRENT_COMMIT ${COMMAND_RESULT})
 	if(GIT_FETCH_SUBMODULES)
-		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote --recursive -- "${submodule_dir}"
+		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote -- "${submodule_dir}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
 		if(NOT COMMAND_RESULT EQUAL "0")

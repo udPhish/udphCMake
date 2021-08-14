@@ -1,15 +1,17 @@
-set(CMAKE_UDPH_PATH "${CMAKE_CURRENT_LIST_DIR}")
+set(UDPH_CMAKE_VERSION master CACHE STRING "Git tag or branch for udphCMake.")
 
-include("${CMAKE_UDPH_PATH}/udphSettings")
+FetchContent_Declare(
+	"updhCMake_${UDPH_CMAKE_VERSION}"
+	GIT_REPOSITORY "https://github.com/udPhish/udphCMake.git"
+	GIT_TAG "${UDPH_CMAKE_VERSION}"
+)
+string(TOLOWER "updhCMake_${UDPH_CMAKE_VERSION}" lcName)
+if(NOT ${lcName}_POPULATED)
+	FetchContent_Populate(${lcName})
 
-if(GIT_PROJECT)
-	include("${CMAKE_UDPH_PATH}/udphGit")
+	list(PREPEND CMAKE_MODULE_PATH "${${lcName}_SOURCE_DIR}")
+
+	add_subdirectory(${${lcName}_SOURCE_DIR} ${${lcName}_BINARY_DIR})
 endif()
-include("${CMAKE_UDPH_PATH}/udphProject")
-include("${CMAKE_UDPH_PATH}/udphTarget")
-include("${CMAKE_UDPH_PATH}/udphStaticAnalyzers")
 
-include(GNUInstallDirs)
-include(FetchContent)
-include(GenerateExportHeader)
-include(CMakePackageConfigHelpers)
+include(udphInit)
