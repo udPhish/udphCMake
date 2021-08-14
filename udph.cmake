@@ -11,8 +11,6 @@ if(NOT ${lcName}_POPULATED)
 	FetchContent_Populate(${lcName})
 
 	list(PREPEND CMAKE_MODULE_PATH "${${lcName}_SOURCE_DIR}")
-
-	add_subdirectory(${${lcName}_SOURCE_DIR} ${${lcName}_BINARY_DIR})
 endif()
 
 include(udphInit)
