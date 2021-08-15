@@ -44,8 +44,10 @@ endmacro()
 
 macro(finalize)
 	if(GIT_PROJECT AND GIT_CLEAN_SUBMODULES)
+		message("Uh ${ITEM} : ${${PROJECT_NAME}_GIT_SUBMODULES}")
 		foreach(ITEM ${${PROJECT_NAME}_GIT_SUBMODULES_STORED})
 			if(NOT ${ITEM} IN_LIST "${${PROJECT_NAME}_GIT_SUBMODULES}")
+				message("HERE")
 				if(GIT_CLEAN_SUBMODULES_FORCE)
 					execute_process(COMMAND ${GIT_EXECUTABLE} submodule deinit --force "${ITEM}"
 									WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
