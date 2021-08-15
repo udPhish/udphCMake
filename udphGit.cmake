@@ -214,16 +214,10 @@ macro(git_add_submodule directory remote)
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule set-branch --branch "${ARGV2}" -- "${directory}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
-		if(NOT COMMAND_RESULT EQUAL "0")
-			message(FATAL_ERROR "Unable to select branch ${ARGV2} for submodule ${directory}.")
-		endif()
 	else()
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule set-branch --default -- "${directory}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
-		if(NOT COMMAND_RESULT EQUAL "0")
-			message(FATAL_ERROR "Unable to select default branch for submodule ${directory}.")
-		endif()
 	endif()
 	git_update_submodule("${directory}")
 	list(APPEND ${PROJECT_NAME}_GIT_SUBMODULES "${directory}")
