@@ -176,11 +176,11 @@ function(git_update_submodule submodule_dir)
 	endif()
 	string(STRIP "${COMMAND_OUTPUT}" COMMAND_OUTPUT)
 
-	execute_process(COMMAND ${GIT_EXECUTABLE} pull
-	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}")
 	execute_process(COMMAND ${GIT_EXECUTABLE} switch ${COMMAND_OUTPUT}
 	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}"
 	 				RESULT_VARIABLE COMMAND_RESULT)
+	execute_process(COMMAND ${GIT_EXECUTABLE} pull
+	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}")
 	if(NOT COMMAND_RESULT EQUAL "0")
 	 	message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
 	endif()
