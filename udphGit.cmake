@@ -166,6 +166,7 @@ function(git_update_submodule submodule_dir)
 	 		message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
 		endif()
 	endif()
+
 	execute_process(COMMAND ${GIT_EXECUTABLE} config -f .gitmodules submodule.${submodule_dir}.branch
 	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 				RESULT_VARIABLE COMMAND_RESULT
@@ -174,7 +175,7 @@ function(git_update_submodule submodule_dir)
 		set(COMMAND_OUTPUT "master")
 	endif()
 	string(STRIP "${COMMAND_OUTPUT}" COMMAND_OUTPUT)
-	execute_process(COMMAND ${GIT_EXECUTABLE} switch ${COMMAND_OUTPUT}
+	execute_process(COMMAND ${GIT_EXECUTABLE} switch "remote/${COMMAND_OUTPUT}"
 	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}"
 	 				RESULT_VARIABLE COMMAND_RESULT)
 	if(NOT COMMAND_RESULT EQUAL "0")
