@@ -45,7 +45,7 @@ endmacro()
 macro(finalize)
 	if(GIT_PROJECT AND GIT_CLEAN_SUBMODULES)
 		foreach(ITEM ${${PROJECT_NAME}_GIT_SUBMODULES_STORED})
-			message("it ${${PROJECT_NAME}_GIT_SUBMODULES}")
+			message("it ${PROJECT_NAME}_GIT_SUBMODULES")
 			if(NOT ${ITEM} IN_LIST ${PROJECT_NAME}_GIT_SUBMODULES)
 				if(GIT_CLEAN_SUBMODULES_FORCE)
 					execute_process(COMMAND ${GIT_EXECUTABLE} submodule deinit --force "${ITEM}"
