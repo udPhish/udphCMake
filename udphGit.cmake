@@ -176,7 +176,7 @@ function(git_update_submodule submodule_dir)
 	endif()
 	string(STRIP "${COMMAND_OUTPUT}" COMMAND_OUTPUT)
 
-	execute_process(COMMAND ${GIT_EXECUTABLE} pull remote "${COMMAND_OUTPUT}"
+	execute_process(COMMAND ${GIT_EXECUTABLE} pull
 	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}")
 	execute_process(COMMAND ${GIT_EXECUTABLE} switch ${COMMAND_OUTPUT}
 	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}"
