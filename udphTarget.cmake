@@ -32,6 +32,7 @@ macro(target_general_setup TARGET_NAME)
         set_target_properties(${TARGET_NAME} PROPERTIES
             CXX_STANDARD 20
             VERSION ${PROJECT_VERSION}
+            VER ${PROJECT_VERSION}
             LINKER_LANGUAGE CXX
         )
     endif()
