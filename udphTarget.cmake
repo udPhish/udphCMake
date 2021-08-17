@@ -35,7 +35,6 @@ macro(target_general_setup TARGET_NAME)
             LINKER_LANGUAGE CXX
         )
     endif()
-    set_target_properties(${TARGET_NAME} PROPERTIES VERSION "${${PROJECT_NAME}_VERSION}")
 endmacro()
 function(target_create_exe TARGET_NAME)
 	add_executable(${TARGET_NAME})
