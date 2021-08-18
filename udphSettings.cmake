@@ -24,5 +24,3 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(ENABLE_TESTING "Enable Test Builds" ON)
 
 option(GIT_PROJECT "Project uses Git." ON)
-
-define_property(TARGET PROPERTY "VER" BRIEF_DOCS "Brief" FULL_DOCS "Full")
