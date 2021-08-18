@@ -4,12 +4,13 @@ endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
 	message("prov ${PROVIDED_PROJECTS}")
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
-	FetchContent_Declare(
-		${project_name}
-		GIT_REPOSITORY ${git_repository}
-		GIT_TAG ${git_tag}
-	)
-	FetchContent_MakeAvailable(${project_name})
+		FetchContent_Declare(
+			${project_name}
+			GIT_REPOSITORY ${git_repository}
+			GIT_TAG ${git_tag}
+		)
+		FetchContent_MakeAvailable(${project_name})
+	endif()
 endfunction()
 function(project_load_dir fetch_dir)
 	add_subdirectory(${fetch_dir})
