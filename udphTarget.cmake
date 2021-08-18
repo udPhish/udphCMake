@@ -36,6 +36,9 @@ macro(target_general_setup TARGET_NAME)
             LINKER_LANGUAGE CXX
         )
     endif()
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        VER ${PROJECT_VERSION}
+    )
 endmacro()
 function(target_create_exe TARGET_NAME)
 	add_executable(${TARGET_NAME})
@@ -103,7 +106,7 @@ function(target_link TARGET_NAME)
     )
 endfunction()
 function(check_target TARGET_NAME)
-    get_target_property(TARGET_VERSION ${TARGET_NAME} VERSION)
+    get_target_property(TARGET_VERSION ${TARGET_NAME} VER)
     message("v ${TARGET_VERSION}")
     if(${ARGC} GREATER 1)
         if("${TARGET_VERSION}" VERSION_LESS "${ARGV1}")
