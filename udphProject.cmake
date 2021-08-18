@@ -2,7 +2,7 @@ function(provide_project project_name)
 	list(APPEND PROVIDED_PROJECTS ${project_name})
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
-	message(${PROVIDED_PROJECTS})
+	message("prov ${PROVIDED_PROJECTS}")
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
 	FetchContent_Declare(
 		${project_name}
