@@ -1,7 +1,7 @@
 function(provide_project project_name)
 	list(APPEND PROVIDED_PROJECTS ${project_name})
 	message("before ${PROVIDED_PROJECTS}")
-	set(PROVIDED_PROJECTS ${PROVIDED_PROJECTS} CACHE INTERNAL)
+	set(PROVIDED_PROJECTS ${PROVIDED_PROJECTS} CACHE INTERNAL "Projects provided.")
 	message("after ${PROVIDED_PROJECTS}")
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
