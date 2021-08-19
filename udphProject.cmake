@@ -6,7 +6,7 @@ function(provide_project project_name)
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
-		if("${UDPH_${project_name}_LOCATION}" STREQUAL "")
+		if(NOT DEFINED UDPH_${project_name}_LOCATION)
 			FetchContent_Declare(
 				${project_name}
 				GIT_REPOSITORY ${git_repository}
