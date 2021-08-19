@@ -196,7 +196,6 @@ function(git_update_submodule submodule_dir)
 	endif()
 endfunction()
 macro(git_add_submodule directory remote)
-	message("d ${directory} , ${${PROJECT_NAME}_GIT_SUBMODULES_STORED}")
 	if(NOT ${directory} IN_LIST ${PROJECT_NAME}_GIT_SUBMODULES_STORED)
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule add --force -- "${remote}" "${directory}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
