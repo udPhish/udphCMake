@@ -14,7 +14,7 @@ function(project_load_git_repository project_name git_repository git_tag)
 				GIT_SHALLOW ON
 			)
 			FetchContent_MakeAvailable(${project_name})
-			set(UDPH_${project_name}_LOCATION ${${project_name}_SOURCE_DIR} CACHE DIRECTORY "Specify location for ${project_name}.")
+			set(UDPH_${project_name}_LOCATION ${${project_name}_SOURCE_DIR} CACHE PATH "Specify location for ${project_name}.")
 		endif()
 	endif()
 endfunction()
