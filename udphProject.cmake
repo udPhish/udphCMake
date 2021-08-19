@@ -6,11 +6,8 @@ function(provide_project project_name)
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
 	set(UDPH_${project_name}_LOCATION "" CACHE PATH "Specify location for ${project_name}.")
-	message("a ${UDPH_${project_name}_LOCATION}")
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
-		message("mayber")
 		if("${UDPH_${project_name}_LOCATION}" STREQUAL "")
-			message("here")
 			FetchContent_Declare(
 				${project_name}
 				GIT_REPOSITORY ${git_repository}
@@ -19,7 +16,6 @@ function(project_load_git_repository project_name git_repository git_tag)
 			)
 			FetchContent_MakeAvailable(${project_name})
 		else()
-			message("there")
 			FetchContent_Declare(
 				${project_name}
 				URL ${UDPH_${project_name}_LOCATION}
