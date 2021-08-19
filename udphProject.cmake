@@ -6,13 +6,16 @@ function(provide_project project_name)
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
-		FetchContent_Declare(
-			${project_name}
-			GIT_REPOSITORY ${git_repository}
-			GIT_TAG ${git_tag}
-			GIT_SHALLOW ON
-		)
-		FetchContent_MakeAvailable(${project_name})
+		if("${UDPH_${project_name}_LOCATION}" STREQUAL "")
+			FetchContent_Declare(
+				${project_name}
+				GIT_REPOSITORY ${git_repository}
+				GIT_TAG ${git_tag}
+				GIT_SHALLOW ON
+			)
+			FetchContent_MakeAvailable(${project_name})
+			set(UDPH_${project_name}_LOCATION ${${project_name}_SOURCE_DIR} CACHE "Specify location for ${project_name}.")
+		endif()
 	endif()
 endfunction()
 function(project_load_dir fetch_dir)
