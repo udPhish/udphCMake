@@ -9,7 +9,7 @@ function(project_load_git_repository project_name git_repository git_tag)
 	message("a ${UDPH_${project_name}_LOCATION}")
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
 		message("mayber")
-		if("UDPH_${project_name}_LOCATION" STREQUAL "")
+		if("${UDPH_${project_name}_LOCATION}" STREQUAL "")
 			message("here")
 			FetchContent_Declare(
 				${project_name}
