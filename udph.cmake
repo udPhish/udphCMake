@@ -6,6 +6,7 @@ FetchContent_Declare(
 	"${UDPH_CMAKE_NAME}"
 	GIT_REPOSITORY "https://github.com/udPhish/udphCMake.git"
 	GIT_TAG "${UDPH_CMAKE_VERSION}"
+	GIT_SHALLOW ON
 )
 string(TOLOWER "${UDPH_CMAKE_NAME}" lcName)
 if(NOT ${lcName}_POPULATED)

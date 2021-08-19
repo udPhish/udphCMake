@@ -10,6 +10,7 @@ function(project_load_git_repository project_name git_repository git_tag)
 			${project_name}
 			GIT_REPOSITORY ${git_repository}
 			GIT_TAG ${git_tag}
+			GIT_SHALLOW ON
 		)
 		FetchContent_MakeAvailable(${project_name})
 	endif()
