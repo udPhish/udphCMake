@@ -4,6 +4,17 @@ function(provide_project project_name)
 		set(PROVIDED_PROJECTS ${PROVIDED_PROJECTS} CACHE INTERNAL "Projects provided.")
 	endif()
 endfunction()
+function(project_load_conan_package project_name _requires)
+	conan_cmake_configure(REQUIRES "${project_name}/${_requires}" GENERATORS cmake_find_package)
+
+	conan_cmake_autodetect(settings BUILD_TYPE ${CMAKE_BUILD_TYPE})
+	conan_cmake_install(PATH_OR_REFERENCE .
+						BUILD missing
+						REMOTE conan-center
+						SETTINGS ${settings})
+
+	find_package(${project_name})
+endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
 	set(UDPH_${project_name}_LOCATION "" CACHE PATH "Specify location for ${project_name}.")
 	if(NOT ${project_name} IN_LIST PROVIDED_PROJECTS)
