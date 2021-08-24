@@ -1,2 +1,2 @@
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/conan")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 include("${UDPH_CMAKE_DIR}/conan.cmake")
