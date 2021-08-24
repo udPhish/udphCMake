@@ -26,7 +26,7 @@ function(project_load_conan_package project_name _requires)
 							REMOTE conan-center
 							SETTINGS ${settings})
 	endif()
-	find_package(${project_name})
+	find_package(${project_name} CONFIG REQUIRED)
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
 	set(UDPH_${project_name}_LOCATION "" CACHE PATH "Specify location for ${project_name}.")
