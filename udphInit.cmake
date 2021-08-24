@@ -4,7 +4,7 @@ if(GIT_PROJECT)
 	include("${UDPH_CMAKE_DIR}/udphGit.cmake")
 endif()
 
-include("${UDPH_CMAKE_DIR}/conan.cmake")
+include("${UDPH_CMAKE_DIR}/udphConan.cmake")
 
 include("${UDPH_CMAKE_DIR}/udphProject.cmake")
 include("${UDPH_CMAKE_DIR}/udphTarget.cmake")

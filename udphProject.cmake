@@ -10,7 +10,7 @@ function(project_load_conan_package project_name _requires)
 		conan_cmake_configure(REQUIRES "${CONAN_NAME}/${_requires}" GENERATORS cmake_find_package_multi)
 		foreach(TYPE ${CMAKE_CONFIGURATION_TYPES})
 			conan_cmake_autodetect(settings BUILD_TYPE ${TYPE})
-			conan_cmake_install(PATH_OR_REFERENCE .
+			conan_cmake_install(PATH_OR_REFERENCE conan
 								BUILD missing
 								REMOTE conan-center
 								SETTINGS ${settings})
@@ -19,7 +19,7 @@ function(project_load_conan_package project_name _requires)
 		conan_cmake_configure(REQUIRES "${CONAN_NAME}/${_requires}" GENERATORS cmake_find_package)
 
 		conan_cmake_autodetect(settings BUILD_TYPE ${CMAKE_BUILD_TYPE})
-		conan_cmake_install(PATH_OR_REFERENCE .
+		conan_cmake_install(PATH_OR_REFERENCE conan
 							BUILD missing
 							REMOTE conan-center
 							SETTINGS ${settings})
