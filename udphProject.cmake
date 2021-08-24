@@ -24,6 +24,7 @@ function(project_load_conan_package project_name _requires)
 							REMOTE conan-center
 							SETTINGS ${settings})
 	endif()
+	message("CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}")
 	find_package(${project_name} CONFIG REQUIRED)
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
