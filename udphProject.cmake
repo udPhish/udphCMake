@@ -7,6 +7,7 @@ endfunction()
 function(project_load_conan_package project_name _requires)
 	conan_cmake_configure(REQUIRES "${project_name}/${_requires}" GENERATORS cmake_find_package)
 
+	message("bt ${CMAKE_BUILD_TYPE}")
 	conan_cmake_autodetect(settings BUILD_TYPE ${CMAKE_BUILD_TYPE})
 	conan_cmake_install(PATH_OR_REFERENCE .
 						BUILD missing
