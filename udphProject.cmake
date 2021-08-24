@@ -5,15 +5,24 @@ function(provide_project project_name)
 	endif()
 endfunction()
 function(project_load_conan_package project_name _requires)
-	conan_cmake_configure(REQUIRES "${project_name}/${_requires}" GENERATORS cmake_find_package)
+	if(GENERATOR_IS_MULTI_CONFIG)
+		conan_cmake_configure(REQUIRES "${project_name}/${_requires}" GENERATORS cmake_find_package_multi)
+		foreach(TYPE ${CMAKE_CONFIGURATION_TYPES})
+			conan_cmake_autodetect(settings BUILD_TYPE ${TYPE})
+			conan_cmake_install(PATH_OR_REFERENCE .
+								BUILD missing
+								REMOTE conan-center
+								SETTINGS ${settings})
+		endforeach()
+	else()
+		conan_cmake_configure(REQUIRES "${project_name}/${_requires}" GENERATORS cmake_find_package)
 
-	message("bt ${CMAKE_BUILD_TYPE}")
-	conan_cmake_autodetect(settings BUILD_TYPE ${CMAKE_BUILD_TYPE})
-	conan_cmake_install(PATH_OR_REFERENCE .
-						BUILD missing
-						REMOTE conan-center
-						SETTINGS ${settings})
-
+		conan_cmake_autodetect(settings BUILD_TYPE ${CMAKE_BUILD_TYPE})
+		conan_cmake_install(PATH_OR_REFERENCE .
+							BUILD missing
+							REMOTE conan-center
+							SETTINGS ${settings})
+	endif()
 	find_package(${project_name})
 endfunction()
 function(project_load_git_repository project_name git_repository git_tag)
