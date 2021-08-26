@@ -93,39 +93,55 @@ function(target_link TARGET_NAME)
             PRIVATE
                 "${${TARGET_NAME}_DIR_SRC}"
                 "${${TARGET_NAME}_DIR_HDR_PRIVATE}"
+            PUBLIC
+                "${${TARGET_NAME}_DIR_HDR_PUBLIC}"
         )
         target_sources(
             ${TARGET_NAME}
             PRIVATE
                 "${${TARGET_NAME}_SRC}"
                 "${${TARGET_NAME}_HDR_PRIVATE}"
+            PUBLIC
+                "${${TARGET_NAME}_HDR_PUBLIC}"
         )
         target_link_libraries(
             ${TARGET_NAME}
             PRIVATE
                 "${${TARGET_NAME}_DEP_PRIVATE}"
+            PUBLIC
+                "${${TARGET_NAME}_DEP_PUBLIC}"
+        )
+    else()
+        target_include_directories(
+            ${TARGET_NAME}
+            INTERFACE
+                "${${TARGET_NAME}_DIR_HDR_PUBLIC}"
+        )
+        target_sources(
+            ${TARGET_NAME}
+            INTERFACE
+                "${${TARGET_NAME}_HDR_PUBLIC}"
+        )
+        target_link_libraries(
+            ${TARGET_NAME}
+            INTERFACE
+                "${${TARGET_NAME}_DEP_PUBLIC}"
         )
     endif()
     target_include_directories(
         ${TARGET_NAME}
         INTERFACE
             "${${TARGET_NAME}_DIR_HDR_INTERFACE}"
-        PUBLIC
-            "${${TARGET_NAME}_DIR_HDR_PUBLIC}"
     )
     target_sources(
         ${TARGET_NAME}
         INTERFACE
             "${${TARGET_NAME}_HDR_INTERFACE}"
-        PUBLIC
-            "${${TARGET_NAME}_HDR_PUBLIC}"
     )
     target_link_libraries(
         ${TARGET_NAME}
         INTERFACE
             "${${TARGET_NAME}_DEP_INTERFACE}"
-        PUBLIC
-            "${${TARGET_NAME}_DEP_PUBLIC}"
     )
 endfunction()
 function(check_target TARGET_NAME)
