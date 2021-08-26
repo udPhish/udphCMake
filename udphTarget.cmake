@@ -21,6 +21,16 @@ endfunction()
 function(target_set_dir_hdr_public TARGET_NAME DIR)
     set(${TARGET_NAME}_DIR_HDR_PUBLIC "${DIR}" PARENT_SCOPE)
 endfunction()
+macro(_target_setup_lib TARGET_NAME)
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        FOLDER "${${PROJECT_NAME}_NAMESPACE}/Libraries"
+    )
+endmacro()
+macro(_target_setup_exe TARGET_NAME)
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        FOLDER "${${PROJECT_NAME}_NAMESPACE}/Executables"
+    )
+endmacro()
 macro(target_general_setup TARGET_NAME)
     set(${TARGET_NAME}_DIR_SRC "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
     set(${TARGET_NAME}_DIR_HDR_PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
@@ -34,6 +44,11 @@ macro(target_general_setup TARGET_NAME)
             VERSION ${PROJECT_VERSION}
             LINKER_LANGUAGE CXX
         )
+        if("${${TARGET_NAME}_TYPE}" STREQUAL "STATIC_LIBRARY" OR "${${TARGET_NAME}_TYPE}" STREQUAL "SHARED_LIBRARY")
+            _target_setup_lib(${TARGET_NAME})
+        elseif("${${TARGET_NAME}_TYPE}" STREQUAL "EXECUTABLE")
+            _target_setup_exe(${TARGET_NAME})
+        endif()
     endif()
     set(${TARGET_NAME}_VERSION ${PROJECT_VERSION} CACHE INTERNAL "Target version.")
 endmacro()
