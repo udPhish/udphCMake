@@ -115,33 +115,33 @@ function(target_link TARGET_NAME)
         target_include_directories(
             ${TARGET_NAME}
             INTERFACE
-                "${${TARGET_NAME}_DIR_HDR_PUBLIC}"
+                "$<BUILD_INTERFACE:${${TARGET_NAME}_DIR_HDR_PUBLIC}>"
         )
         target_sources(
             ${TARGET_NAME}
             INTERFACE
-                "${${TARGET_NAME}_HDR_PUBLIC}"
+                "$<BUILD_INTERFACE:${${TARGET_NAME}_HDR_PUBLIC}>"
         )
         target_link_libraries(
             ${TARGET_NAME}
             INTERFACE
-                "${${TARGET_NAME}_DEP_PUBLIC}"
+                "$<BUILD_INTERFACE:${${TARGET_NAME}_DEP_PUBLIC}>"
         )
     endif()
     target_include_directories(
         ${TARGET_NAME}
         INTERFACE
-            "${${TARGET_NAME}_DIR_HDR_INTERFACE}"
+            "$<BUILD_INTERFACE:${${TARGET_NAME}_DIR_HDR_INTERFACE}>"
     )
     target_sources(
         ${TARGET_NAME}
         INTERFACE
-            "${${TARGET_NAME}_HDR_INTERFACE}"
+            "$<BUILD_INTERFACE:${${TARGET_NAME}_HDR_INTERFACE}>"
     )
     target_link_libraries(
         ${TARGET_NAME}
         INTERFACE
-            "${${TARGET_NAME}_DEP_INTERFACE}"
+            "$<BUILD_INTERFACE:${${TARGET_NAME}_DEP_INTERFACE}>"
     )
 endfunction()
 function(check_target TARGET_NAME)
