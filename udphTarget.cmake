@@ -275,7 +275,6 @@ function(target_package TARGET_NAME)
         ${${PROJECT_NAME}_CONFIG_FILE}
         INSTALL_DESTINATION
             "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
-            "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
     )
 
     #########
