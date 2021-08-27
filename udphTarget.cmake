@@ -101,6 +101,7 @@ function(target_link TARGET_NAME)
         PUBLIC_HEADER "${${TARGET_NAME}_HDR_INTERFACE};${${TARGET_NAME}_HDR_PUBLIC}"
     )
     if(NOT "${${TARGET_NAME}_TYPE}" STREQUAL "INTERFACE_LIBRARY")
+        message("here ${PROJECT_NAME} d: ${${TARGET_NAME}_DIR_HDR_PUBLIC} h: ${${TARGET_NAME}_HDR_PUBLIC}")
         target_include_directories(
             ${TARGET_NAME}
             PRIVATE
