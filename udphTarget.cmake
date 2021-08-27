@@ -94,7 +94,7 @@ function(target_link TARGET_NAME)
                 "${${TARGET_NAME}_DIR_SRC}"
                 "${${TARGET_NAME}_DIR_HDR_PRIVATE}"
             PUBLIC
-                "${${TARGET_NAME}_DIR_HDR_PUBLIC}"
+                "$<BUILD_INTERFACE:${${TARGET_NAME}_DIR_HDR_PUBLIC}>"
         )
         target_sources(
             ${TARGET_NAME}
@@ -102,14 +102,14 @@ function(target_link TARGET_NAME)
                 "${${TARGET_NAME}_SRC}"
                 "${${TARGET_NAME}_HDR_PRIVATE}"
             PUBLIC
-                "${${TARGET_NAME}_HDR_PUBLIC}"
+                "$<BUILD_INTERFACE:${${TARGET_NAME}_HDR_PUBLIC}>"
         )
         target_link_libraries(
             ${TARGET_NAME}
             PRIVATE
                 "${${TARGET_NAME}_DEP_PRIVATE}"
             PUBLIC
-                "${${TARGET_NAME}_DEP_PUBLIC}"
+                "$<BUILD_INTERFACE:${${TARGET_NAME}_DEP_PUBLIC}>"
         )
     else()
         target_include_directories(
@@ -180,8 +180,8 @@ function(target_append_dep_public TARGET_NAME DEP_NAME)
     set(${TARGET_NAME}_DEP_PUBLIC ${${TARGET_NAME}_DEP_PUBLIC} PARENT_SCOPE)
 endfunction()
 function(target_append_dep TARGET_NAME DEP_NAME)
-    target_append_dep_public(${TARGET_NAME} ${DEP_NAME})
-    set(${TARGET_NAME}_DEP_PUBLIC ${${TARGET_NAME}_DEP_PUBLIC} PARENT_SCOPE)
+    target_append_dep_private(${TARGET_NAME} ${DEP_NAME})
+    set(${TARGET_NAME}_DEP_PRIVATE ${${TARGET_NAME}_DEP_PRIVATE} PARENT_SCOPE)
 endfunction()
 function(target_append_src TARGET_NAME)
     list(LENGTH ARGN ARGN_LENGTH)
@@ -218,8 +218,8 @@ endfunction()
 function(target_append_hdr TARGET_NAME)
     list(LENGTH ARGN ARGN_LENGTH)
     if(${ARGN_LENGTH} GREATER 0)
-        target_append_hdr_public(${TARGET_NAME} ${ARGN})
-        set(${TARGET_NAME}_HDR_PUBLIC ${${TARGET_NAME}_HDR_PUBLIC} PARENT_SCOPE)
+        target_append_hdr_private(${TARGET_NAME} ${ARGN})
+        set(${TARGET_NAME}_HDR_PRIVATE ${${TARGET_NAME}_HDR_PRIVATE} PARENT_SCOPE)
     endif()
 endfunction()
 function(target_package TARGET_NAME)
