@@ -162,10 +162,6 @@ function(target_link TARGET_NAME)
     get_target_property(OUT_INTERFACE_SOURCES ${TARGET_NAME} INTERFACE_SOURCES)
     get_target_property(OUT_LINK_LIBRARIES ${TARGET_NAME} LINK_LIBRARIES)
     get_target_property(OUT_INTERFACE_LINK_LIBRARIES ${TARGET_NAME} INTERFACE_LINK_LIBRARIES)
-    message("here ${PROJECT_NAME}")
-    message(" d: ${OUT_INCLUDE_DIRECTORIES} h: ${OUT_INTERFACE_INCLUDE_DIRECTORIES}")
-    message(" d: ${OUT_SOURCES} h: ${OUT_INTERFACE_SOURCES}")
-    message(" d: ${OUT_LINK_LIBRARIES} h: ${OUT_INTERFACE_LINK_LIBRARIES}")
 endfunction()
 function(check_target TARGET_NAME)
     if(NOT TARGET ${TARGET_NAME})
@@ -278,6 +274,7 @@ function(target_package TARGET_NAME)
         "${UDPH_CMAKE_DIR}/udphConfig.cmake.in"
         ${${PROJECT_NAME}_CONFIG_FILE}
         INSTALL_DESTINATION
+            "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
             "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
     )
 
