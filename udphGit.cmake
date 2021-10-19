@@ -144,11 +144,11 @@ function(git_update_submodules)
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule foreach -q --recursive "\"${GIT_EXECUTABLE}\" switch $(\"${GIT_EXECUTABLE}\" config -f $toplevel/.gitmodules submodule.$name.branch || echo master)" 
 	 									WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 									RESULT_VARIABLE GIT_SUBMOD_RESULT)
-		if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+		if(NOT ${GIT_SUBMOD_RESULT} EQUAL "0")
 	 		message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMOD_RESULT}")
 		endif()
 	endif()
-	if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+	if(NOT ${GIT_SUBMOD_RESULT} EQUAL "0")
 		message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
 	endif()
 endfunction()
@@ -162,7 +162,7 @@ function(git_update_submodule submodule_dir)
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --remote -- "${submodule_dir}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
-		if(NOT COMMAND_RESULT EQUAL "0")
+		if(NOT ${COMMAND_RESULT} EQUAL "0")
 	 		message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
 		endif()
 	endif()
@@ -181,7 +181,7 @@ function(git_update_submodule submodule_dir)
 	 				RESULT_VARIABLE COMMAND_RESULT)
 	execute_process(COMMAND ${GIT_EXECUTABLE} pull
 	 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${submodule_dir}")
-	if(NOT COMMAND_RESULT EQUAL "0")
+	if(NOT ${COMMAND_RESULT} EQUAL "0")
 	 	message(FATAL_ERROR  "Unable to update submodule ${submodule_dir}.")
 	endif()
 	execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse @{0}
@@ -200,17 +200,17 @@ macro(git_add_submodule directory remote)
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule add --force -- "${remote}" "${directory}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
-		if(NOT COMMAND_RESULT EQUAL "0")
+		if(NOT ${COMMAND_RESULT} EQUAL "0")
 			message(FATAL_ERROR "Unable to add submodule ${directory}.")
 		endif()
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule init "${directory}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
-		if(NOT COMMAND_RESULT EQUAL "0")
+		if(NOT ${COMMAND_RESULT} EQUAL "0")
 			message(FATAL_ERROR "Unable to initialize submodule ${directory}.")
 		endif()
 	endif()
-	if(ARGC EQUAL "3")
+	if(${ARGC} EQUAL "3")
 		execute_process(COMMAND ${GIT_EXECUTABLE} submodule set-branch --branch "${ARGV2}" -- "${directory}"
 						WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 	 					RESULT_VARIABLE COMMAND_RESULT)
