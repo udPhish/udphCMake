@@ -94,6 +94,55 @@ macro(project_create proj_name)
 endmacro()
 
 macro(finalize)
+    # Configure package files
+    write_basic_package_version_file(
+        "${${PROJECT_NAME}_VERSION_CONFIG_FILE}"
+        COMPATIBILITY
+            SameMajorVersion
+    )
+    #TODO: config file should be named "${ProjectName}Config.cmake" after confiuration
+    configure_package_config_file(
+        "${UDPH_CMAKE_DIR}/udphConfig.cmake.in"
+        ${${PROJECT_NAME}_CONFIG_FILE}
+        INSTALL_DESTINATION
+            "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
+    )
+
+    #########
+    # INSTALL
+    #########
+    # Target
+    install(
+        TARGETS ${${PROJECT_NAME}_INSTALL_TARGETS}
+        EXPORT ${${PROJECT_NAME}_TARGETS_FILE}
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    )
+    # Includes
+    install(
+        FILES ${${PROJECT_NAME}_INSTALL_FILES}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}
+    )
+    # Headers export
+    install(
+        EXPORT ${${PROJECT_NAME}_TARGETS_FILE}
+        NAMESPACE ${${PROJECT_NAME}_NAMESPACE}
+        DESTINATION ${${PROJECT_NAME}_CONFIG_INSTALL_DIR}
+    )
+    # Package files
+    install(
+        FILES ${${PROJECT_NAME}_CONFIG_FILE} ${${PROJECT_NAME}_VERSION_CONFIG_FILE}
+        DESTINATION ${${PROJECT_NAME}_CONFIG_INSTALL_DIR}
+    )
+    # Export build
+    export(TARGETS ${${PROJECT_NAME}_INSTALL_TARGETS} NAMESPACE ${${PROJECT_NAME}_NAMESPACE}:: APPEND FILE ${${PROJECT_NAME}_TARGETS_FILE})
+    set(CMAKE_EXPORT_PACKAGE_REGISTRY ON)
+    set(CMAKE_EXPORT_PACKAGE_REGISTRY ON PARENT_SCOPE)
+    export(PACKAGE ${PROJECT_NAME})
+
 	if(GIT_PROJECT AND GIT_CLEAN_SUBMODULES)
 		foreach(ITEM ${${PROJECT_NAME}_GIT_SUBMODULES_STORED})
 			if(NOT ${ITEM} IN_LIST ${PROJECT_NAME}_GIT_SUBMODULES)

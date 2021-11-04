@@ -156,6 +156,12 @@ function(target_link TARGET_NAME)
         INTERFACE
             "$<BUILD_INTERFACE:${${TARGET_NAME}_DEP_INTERFACE}>"
     )
+    list(APPEND ${PROJECT_NAME}_INSTALL_TARGETS ${TARGET_NAME})
+    set(${PROJECT_NAME}_INSTALL_TARGETS ${${PROJECT_NAME}_INSTALL_TARGETS} PARENT_SCOPE)
+    list(APPEND ${PROJECT_NAME}_INSTALL_FILES "${${TARGET_NAME}_HDR_INTERFACE}")
+    list(APPEND ${PROJECT_NAME}_INSTALL_FILES "${${TARGET_NAME}_HDR_PUBLIC}")
+    set(${PROJECT_NAME}_INSTALL_FILES ${${PROJECT_NAME}_INSTALL_FILES} PARENT_SCOPE)
+
     get_target_property(OUT_INCLUDE_DIRECTORIES ${TARGET_NAME} INCLUDE_DIRECTORIES)
     get_target_property(OUT_INTERFACE_INCLUDE_DIRECTORIES ${TARGET_NAME} INTERFACE_INCLUDE_DIRECTORIES)
     get_target_property(OUT_SOURCES ${TARGET_NAME} SOURCES)
@@ -240,80 +246,4 @@ function(target_append_hdr TARGET_NAME)
         target_append_hdr_private(${TARGET_NAME} ${ARGN})
         set(${TARGET_NAME}_HDR_PRIVATE ${${TARGET_NAME}_HDR_PRIVATE} PARENT_SCOPE)
     endif()
-endfunction()
-function(target_package TARGET_NAME)
-    set(${TARGET_NAME}_EXPORT ${${PROJECT_NAME}_GENERATED_HEADER_DIR}/${TARGET_NAME}_EXPORT.h)
-    set(${TARGET_NAME}_EXPORT ${${TARGET_NAME}_EXPORT} PARENT_SCOPE)
-    # Generate export header
-    if(${${TARGET_NAME}_TYPE} STREQUAL "STATIC_LIBRARY" OR ${${TARGET_NAME}_TYPE} STREQUAL "SHARED_LIBRARY" OR ${${TARGET_NAME}_TYPE} STREQUAL "MODULE_LIBRARY")
-        generate_export_header(${TARGET_NAME} EXPORT_FILE_NAME ${${TARGET_NAME}_EXPORT})
-    endif()
-    # Include generated directories
-    if(${${TARGET_NAME}_TYPE} STREQUAL "INTERFACE_LIBRARY")
-        target_include_directories(
-        ${TARGET_NAME}
-        INTERFACE
-            $<BUILD_INTERFACE:${${PROJECT_NAME}_GENERATED_HEADER_DIR}>
-        )
-    else()
-        target_include_directories(
-        ${TARGET_NAME}
-        PRIVATE
-            ${${PROJECT_NAME}_GENERATED_HEADER_DIR}
-        INTERFACE
-            $<BUILD_INTERFACE:${${PROJECT_NAME}_GENERATED_HEADER_DIR}>
-        )
-    endif()
-    # Configure package files
-    write_basic_package_version_file(
-        "${${PROJECT_NAME}_VERSION_CONFIG_FILE}"
-        COMPATIBILITY
-            SameMajorVersion
-    )
-    configure_package_config_file(
-        "${UDPH_CMAKE_DIR}/udphConfig.cmake.in"
-        ${${PROJECT_NAME}_CONFIG_FILE}
-        INSTALL_DESTINATION
-            "${${PROJECT_NAME}_CONFIG_INSTALL_DIR}"
-    )
-
-    #########
-    # INSTALL
-    #########
-    # Target
-    install(
-        TARGETS ${TARGET_NAME}
-        EXPORT ${${PROJECT_NAME}_TARGETS_FILE}
-        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-        INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    )
-    # Includes
-    install(
-        FILES "${${TARGET_NAME}_HDR_INTERFACE};${${TARGET_NAME}_HDR_PUBLIC}"
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}
-    )
-    # Targets export
-    install(
-        FILES ${${TARGET_NAME}_EXPORT}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${${PROJECT_NAME}_NAMESPACE}/${PROJECT_NAME}
-    )
-    # Headers export
-    install(
-        EXPORT ${${PROJECT_NAME}_TARGETS_FILE}
-        NAMESPACE ${${PROJECT_NAME}_NAMESPACE}
-        DESTINATION ${${PROJECT_NAME}_CONFIG_INSTALL_DIR}
-    )
-    # Package files
-    install(
-        FILES ${${PROJECT_NAME}_CONFIG_FILE} ${${PROJECT_NAME}_VERSION_CONFIG_FILE}
-        DESTINATION ${${PROJECT_NAME}_CONFIG_INSTALL_DIR}
-    )
-    # Export build
-    export(TARGETS ${TARGET_NAME} NAMESPACE ${${PROJECT_NAME}_NAMESPACE}:: APPEND FILE ${${PROJECT_NAME}_TARGETS_FILE})
-    set(CMAKE_EXPORT_PACKAGE_REGISTRY ON)
-    set(CMAKE_EXPORT_PACKAGE_REGISTRY ON PARENT_SCOPE)
-    export(PACKAGE ${PROJECT_NAME})
 endfunction()
