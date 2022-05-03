@@ -53,7 +53,7 @@ macro(_target_general_setup TARGET_NAME)
     set(${TARGET_NAME}_TYPE "${${TARGET_NAME}_TYPE}")
     if(NOT "${${TARGET_NAME}_TYPE}" STREQUAL "INTERFACE_LIBRARY")
         set_target_properties(${TARGET_NAME} PROPERTIES
-            CXX_STANDARD 20
+            CXX_STANDARD 23
             VERSION ${PROJECT_VERSION}
             LINKER_LANGUAGE CXX
         )
